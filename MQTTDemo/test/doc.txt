@@ -1,0 +1,366 @@
+/*
+
+Mqtt: 10 50 0 4 4D 51 54 54 4 EE 0 0x3C 0 11 43 43 3A 35 30 3A 45 33 3A 39 42 3A 46 37 3A 38 34 0 18 43 43 3A 35 30 3A 45 33 3A 39 42 3A 46 37 3A 38 34 2F 73 74
+61 74 75 73 0 7 6F 66 66 6C 69 6E 65 0 6 79 6F 67 65 73 68 0 6 79 6F 67 65 73 68  ConnectPacket
+
+fixed header: 0x10 0x50
+    Control packet type: 0x10 (connect)
+    Remaining length   : 0x50 (number of bytes followed by)
+
+veriable header: 0x00 0x04 0x4D 0x51 0x54 0x54 0x04 0xEE 0x00 0x3C
+    protocol length: 0x00 0x04 
+    protocol name  : 0x4D 0x51 0x54 0x54 (M Q T T)
+    protocol level : 0x04 (level 4) for version 3.1.1 is 4
+    connect flag   : 0xEE b'11101110
+                     Bit0: Reserved {not used here}
+                     Bit1: Clean session {set 1 clean session enabled}
+                     Bit2: Will Flag (Will topic included so set to 1)
+                     Bit3: Will Qos { enabled to Qos 1 0x01 so set to 1 here }
+                     Bit4: Will Qos { enabled to Qos 1 so set to 0 }
+                     Bit5: Will Retain {enabled so set to 1}
+                     Bit6: Password Flag {password used so set to 1}
+                     Bit7: Username Flag {username used so set to 1}
+    Keep Alive     : 0x00 0x3C server client timeout in seconds here 60 second if no communication from                     client to server , server will disconnects client after 90 seconds i.e one and half                    time. max time from client 18:12:15 from sever 27:24:30  
+
+
+Payload: 0x00 0x11 0x43 0x43 0x3A 0x35 0x30 0x3A 0x45 0x33 0x3A 0x39 0x42 0x3A 0x46 0x37 0x3A 0x38 0x34
+		 0x0 0x18 0x43 0x43 0x3A 0x35 0x30 0x3A 0x45 0x33 0x3A 0x39 0x42 0x3A 0x46 0x37 0x3A 0x38 0x34 0x2F 0x73 0x74 0x61 0x74 0x75 0x73
+		 0x0 0x7 0x6F 0x66 0x66 0x6C 0x69 0x6E 0x65 
+		 0x0 0x6 0x79 0x6F 0x67 0x65 0x73 0x68 
+		 0x0 0x6 0x79 0x6F 0x67 0x65 0x73 0x68
+         for connect packet Payload order clientid, will topic, will message, username and password 
+    
+    client id length   : 0x00 0x11 (17 bytes)
+    client id          : 0x43 0x43 0x3A 0x35 0x30 0x3A 0x45 0x33 0x3A 0x39 0x42 0x3A 0x46 0x37 0x3A 0x38                        0x34 0x0 0x18 0x43 0x43 0x3A 0x35 0x30 0x3A 0x45 0x33 0x3A 0x39 0x42 0x3A 0x46                         0x37 0x3A 0x38 0x34 {CC:50:E3:9B:F7:84}
+    will topic length  : 0x00 0x18 (24 bytes)
+    will topic         : 0x43 0x43 0x3A 0x35 0x30 0x3A 0x45 0x33 0x3A 0x39 0x42 0x3A 0x46 0x37 0x3A 0x38                        0x34 0x2F 0x73 0x74 0x61 0x74 0x75 0x73 {CC:50:E3:9B:F7:84/status}
+    will message length: 0x00 0x07 (7 bytes) 
+    will message       : 0x6F 0x66 0x66 0x6C 0x69 0x6E 0x65 0x0 0x6 0x79 0x6F 0x67 0x65 0x73 0x68 {offline}
+    username length    : 0x00 0x06 (6 bytes) 
+    username           : 0x0 0x6 0x79 0x6F 0x67 0x65 0x73 0x68 {yogesh}
+    password length    : 0x00 0x06 (6 bytes) 
+    password           : 0x0 0x6 0x79 0x6F 0x67 0x65 0x73 0x68 {yogesh}
+
+
+Mqtt: 20 2 0 0  ConnAckPacket
+    fixed header: 0x20 0x02
+        Control packet type: 0x20 (connect acknowledge)
+        Remaining length   : 0x02 (number of bytes followed by)
+
+    veriable header: 0x00 0x00
+        connack flag : 0x00
+                        Bit0: Reserved {not used here}
+                        Bit1: Reserved {not used here}
+                        Bit2: Reserved {not used here}
+                        Bit3: Reserved {not used here}
+                        Bit4: Reserved {not used here}
+                        Bit5: Reserved {not used here}
+                        Bit6: Reserved {not used here}
+                        Bit7: Session present {0 here since clean on session set else depends on previous        connection}
+
+        connect return code: 0x00
+                             0x00 {connection accepted}
+                             0x01 {connection refused, wrong protocol}
+                             0x02 {connection refused, identifier rejected}
+                             0x03 {connection refused, server error}
+                             0x04 {connection refused, bad username password}
+                             0x05 {connection refused, unauthorised}
+
+    Payload: connackack packet has no Payload
+
+Publish packet topic name "CC:50:E3:9B:F7:84/hall" payload "test"
+
+Publish topic with Qos0
+Mqtt: 31 1C 0 16 43 43 3A 35 30 3A 45 33 3A 39 42 3A 46 37 3A 38 34 2F 68 61 6C 6C 74 65 73 74  
+fixed header: 0x31 0x1C
+    control packet type: 0x31 b'00110001 packet type publish 
+                         Bit0  : retain { set to 1 here}
+                         Bit1-2: Qos Level {set to 0 here}
+                         Bit3  : Dublicate flag {set to 0 here}
+                         Bit4-7: Packet type {set to 3 here }
+
+    Remaining length  : 0x1C (28 bytes)
+
+veriable header: 0x00 0x16 0x43 0x43 0x3A 0x35 0x30 0x3A 0x45 0x33 0x3A 0x39 0x42 0x3A 0x46 0x37 0x3A 0x38                  0x34 0x2F 0x68 0x61 0x6C 0x6C veriable header lenght and topic name
+
+    topic length: 0x00 0x16 (22 bytes)
+    topic       :  0x43 0x43 0x3A 0x35 0x30 0x3A 0x45 0x33 0x3A 0x39 0x42 0x3A 0x46 0x37 0x3A 0x38                        0x34 0x2F 0x68 0x61 0x6C 0x6C {topic name= CC:50:E3:9B:F7:84/hall}
+
+Payload: 0x74 0x65 0x73 0x74 {test}
+
+
+Publish topic with Qos1 
+Mqtt: 33 1E 0 16 43 43 3A 35 30 3A 45 33 3A 39 42 3A 46 37 3A 38 34 2F 68 61 6C 6C 0 2 74 65 73 74  
+
+fixed header: 0x33 0x1E
+    control packet type: 0x33 b'00110011 packet type publish 
+                         Bit0  : retain { set to 1 here}
+                         Bit1-2: Qos Level {set to 1 here}
+                         Bit3  : Dublicate flag {set to 0 here}
+                         Bit4-7: Packet type {set to 3 here }
+
+    Remaining length  : 0x1E (30 bytes)
+
+veriable header: 0x00 0x16 0x43 0x43 0x3A 0x35 0x30 0x3A 0x45 0x33 0x3A 0x39 0x42 0x3A 0x46 0x37 0x3A 0x38                  0x34 0x2F 0x68 0x61 0x6C 0x6C 0x00 0x02 veriable header lenght and order topic name and                      packet identifier
+
+    topic length: 0x00 0x16 (22 bytes)
+    topic       :  0x43 0x43 0x3A 0x35 0x30 0x3A 0x45 0x33 0x3A 0x39 0x42 0x3A 0x46 0x37 0x3A 0x38                        0x34 0x2F 0x68 0x61 0x6C 0x6C {topic name= CC:50:E3:9B:F7:84/hall}
+    packet identifier: 0x00 0x02
+
+Payload: 0x74 0x65 0x73 0x74 {test}
+
+Mqtt: 40 2 0 2 PubAckPacket
+fixed header: 0x40 0x02
+    control packet type: 0x40 {publish acknowledge packet}
+    Remaining length  : 0x02
+veriable header: 0x00 0x02
+                 packet identifier
+Payload : PubAckPacket hasno payload
+
+Publish topic with Qos2 
+Mqtt: 35 1E 0 16 43 43 3A 35 30 3A 45 33 3A 39 42 3A 46 37 3A 38 34 2F 68 61 6C 6C 0 1 74 65 73 74 
+fixed header: 0x35 0x1E
+    control packet type: 0x35 b'00110101 packet type publish 
+                         Bit0  : retain { set to 1 here}
+                         Bit1-2: Qos Level {set to 2 here}
+                         Bit3  : Dublicate flag {set to 0 here}
+                         Bit4-7: Packet type {set to 3 here }
+
+    Remaining length  : 0x1E (30 bytes)
+
+veriable header: 0x00 0x16 0x43 0x43 0x3A 0x35 0x30 0x3A 0x45 0x33 0x3A 0x39 0x42 0x3A 0x46 0x37 0x3A 0x38                  0x34 0x2F 0x68 0x61 0x6C 0x6C 0x00 0x01 veriable header lenght and order topic name and                      packet identifier
+
+    topic length: 0x00 0x16 (22 bytes)
+    topic       :  0x43 0x43 0x3A 0x35 0x30 0x3A 0x45 0x33 0x3A 0x39 0x42 0x3A 0x46 0x37 0x3A 0x38                        0x34 0x2F 0x68 0x61 0x6C 0x6C {topic name= CC:50:E3:9B:F7:84/hall}
+    packet identifier: 0x00 0x01
+
+Payload: 0x74 0x65 0x73 0x74 {test}
+
+Mqtt: 50 2 0 1  PubRecPacket
+fixed header: 0x50 0x02
+    control packet type: 0x50 {publish received packet}
+    Remaining length  : 0x02
+veriable header: 0x00 0x01
+                 packet identifier
+Payload : PubRecPacket has no payload
+
+Mqtt: 60 2 0 1 onPubRel
+fixed header: 0x60 0x02
+    control packet type: 0x60 {publish release packet}
+    Remaining length  : 0x02
+veriable header: 0x00 0x01
+                 packet identifier
+Payload : PubRecPacket has no payload
+
+Mqtt: 70 2 0 1  PubCompPacket
+fixed header: 0x70 0x02
+    control packet type: 0x70 {publish complete packet}
+    Remaining length  : 0x02
+veriable header: 0x00 0x01
+                 packet identifier
+Payload : PubRecPacket has no payload
+
+
+Subscribe to topic Topic is CC:50:E3:9B:F7:84/led
+
+QoS0
+Mqtt: 82 1A 0 1 0 15 43 43 3A 35 30 3A 45 33 3A 39 42 3A 46 37 3A 38 34 2F 6C 65 64 0 
+fixed header: 0x82 0x1A
+    control packet type: 0x82 {subscribe packet}
+    Remaining length  : 0x1A (26 bytes)
+veriable header: 0x00 0x01
+                 packet identifier
+payload:
+    length : 0x00 0x15
+    topic  : 43 43 3A 35 30 3A 45 33 3A 39 42 3A 46 37 3A 38 34 2F 6C 65 64 {CC:50:E3:9B:F7:84/led}
+    Qos    : 0
+
+Mqtt: 90 3 0 1 0  SubAckPacket
+fixed header: 0x90 0x03
+    control packet type: 0x90 {subscribe acknowledge packet}
+    Remaining length  : 0x03
+veriable header: 0x00 0x01
+                 packet identifier
+payload        : 0x00 {sucess QoS0}
+                   0x00 Qos0
+                   0x00 Qos1
+                   0x00 Qos2
+                   0x80 Failure 
+
+QoS1
+Mqtt: 82 1A 0 1 0 15 43 43 3A 35 30 3A 45 33 3A 39 42 3A 46 37 3A 38 34 2F 6C 65 64 1 
+fixed header: 0x82 0x1A
+    control packet type: 0x82 {subscribe packet}
+    Remaining length  : 0x1A (26 bytes)
+veriable header: 0x00 0x01
+                 packet identifier
+payload:
+    length : 0x00 0x15
+    topic  : 43 43 3A 35 30 3A 45 33 3A 39 42 3A 46 37 3A 38 34 2F 6C 65 64 {CC:50:E3:9B:F7:84/led}
+    Qos    : 1
+
+Mqtt: 90 3 0 1 1  SubAckPacket
+fixed header: 0x90 0x03
+    control packet type: 0x90 {subscribe acknowledge packet}
+    Remaining length  : 0x03
+veriable header: 0x00 0x01
+                 packet identifier
+payload        : 0x01 {sucess QoS1}
+                   0x00 Qos0
+                   0x00 Qos1
+                   0x00 Qos2
+                   0x80 Failure
+
+QoS2
+Mqtt: 82 1A 0 1 0 15 43 43 3A 35 30 3A 45 33 3A 39 42 3A 46 37 3A 38 34 2F 6C 65 64 2 
+fixed header: 0x82 0x1A
+    control packet type: 0x82 {subscribe packet}
+    Remaining length  : 0x1A (26 bytes)
+veriable header: 0x00 0x01
+                 packet identifier
+payload:
+    length : 0x00 0x15
+    topic  : 43 43 3A 35 30 3A 45 33 3A 39 42 3A 46 37 3A 38 34 2F 6C 65 64 {CC:50:E3:9B:F7:84/led}
+    Qos    : 2
+
+Mqtt: 90 3 0 1 2  SubAckPacket
+fixed header: 0x90 0x03
+    control packet type: 0x90 {subscribe acknowledge packet}
+    Remaining length  : 0x03
+veriable header: 0x00 0x01
+                 packet identifier
+payload        : 0x02 {sucess QoS2}
+                   0x00 Qos0
+                   0x00 Qos1
+                   0x00 Qos2
+                   0x80 Failure
+
+
+Subscribe messege example 
+Subscribe to topic Topic is CC:50:E3:9B:F7:84/led
+Subscribe messege is CC:50:E3:9B:F7:84/led off
+QoS0
+Mqtt: 31 1A 0 15 43 43 3A 35 30 3A 45 33 3A 39 42 3A 46 37 3A 38 34 2F 6C 65 64 6F 66 66  onMessage
+fixed header: 0x31 0x1A
+    control packet type: 0x31 {publish packet}
+    Remaining length  : 0x1A (26 bytes)
+veriable header: 0 15 43 43 3A 35 30 3A 45 33 3A 39 42 3A 46 37 3A 38 34 2F 6C 65 64
+                length: 0x00 0x15
+                topic : 43 43 3A 35 30 3A 45 33 3A 39 42 3A 46 37 3A 38 34 2F 6C 65 64 {CC:50:E3:9B:F7:84/          led} 
+payload        : 6F 66 66 {off}
+
+
+QoS1
+Mqtt: 33 1C 0 15 43 43 3A 35 30 3A 45 33 3A 39 42 3A 46 37 3A 38 34 2F 6C 65 64 0 1 6F 66 66  onMessage
+fixed header: 0x33 0x1C
+    control packet type: 0x33 {publish packet QoS1}
+    Remaining length  : 0x1C (28 bytes)
+veriable header: 0 15 43 43 3A 35 30 3A 45 33 3A 39 42 3A 46 37 3A 38 34 2F 6C 65 64 0 1
+                length: 0x00 0x15
+                topic : 43 43 3A 35 30 3A 45 33 3A 39 42 3A 46 37 3A 38 34 2F 6C 65 64 {CC:50:E3:9B:F7:84/          led}
+                identifier: 0x00 0x01 
+payload        : 6F 66 66 {off}
+
+Mqtt: 40 2 0 1 PubAckPacket
+fixed header: 0x40 0x02
+    control packet type: 0x40 {publish acknowledge packet}
+    Remaining length  : 0x02
+veriable header: 0x00 0x01
+                 packet identifier
+Payload : PubAckPacket has no payload
+
+QoS2
+Mqtt: 34 1B 0 15 43 43 3A 35 30 3A 45 33 3A 39 42 3A 46 37 3A 38 34 2F 6C 65 64 0 7 6F 6E  onMessage
+fixed header: 0x34 0x1C
+    control packet type: 0x34 {publish packet QoS2}
+    Remaining length  : 0x1B (27 bytes)
+veriable header: 0 15 43 43 3A 35 30 3A 45 33 3A 39 42 3A 46 37 3A 38 34 2F 6C 65 64 0 7
+                length: 0x00 0x15
+                topic : 43 43 3A 35 30 3A 45 33 3A 39 42 3A 46 37 3A 38 34 2F 6C 65 64 {CC:50:E3:9B:F7:84/          led}
+                identifier: 0x00 0x07 
+payload        : 6F 6E {on}
+
+Mqtt: 50 2 0 7
+Mqtt: 50 2 0 7  PubRecPacket
+fixed header: 0x50 0x02
+    control packet type: 0x50 {publish received packet}
+    Remaining length  : 0x02
+veriable header: 0x00 0x07
+                 packet identifier
+Payload : PubRecPacket has no payload
+
+Mqtt: 62 2 0 7 onPubRel
+fixed header: 0x62 0x02
+    control packet type: 0x62 {publish release packet}
+    Remaining length  : 0x02
+veriable header: 0x00 0x07
+                 packet identifier
+Payload : PubRecPacket has no payload
+
+MqttT: 70 2 0 7 onPubComp
+fixed header: 0x70 0x02
+    control packet type: 0x70 {publish compplete packet}
+    Remaining length  : 0x02
+veriable header: 0x00 0x07
+                 packet identifier
+Payload : PubRecPacket has no payload
+
+Subscribe types:
+Client QoS0 Server QoS0 messege QoS0
+Client QoS0 Server QoS1 messege QoS0
+Client QoS0 Server QoS2 messege QoS0
+
+Client QoS1 Server QoS0 messege QoS0
+Client QoS1 Server QoS1 messege QoS1
+Client QoS1 Server QoS2 messege QoS1
+
+Client QoS2 Server QoS0 messege QoS0
+Client QoS2 Server QoS1 messege QoS1
+Client QoS2 Server QoS2 messege QoS2
+
+Unsubscribe to topic
+topic: CC:50:E3:9B:F7:84/led
+
+Mqtt: A2 19 0 2 0 15 43 43 3A 35 30 3A 45 33 3A 39 42 3A 46 37 3A 38 34 2F 6C 65 64 
+fixed header: 0xA2 0x19
+    control packet type: 0xA2 {unsubscribe packet QoS2}
+    Remaining length  : 0x19 (25 bytes)
+veriable header: 0 2 
+                identifier: 0x00 0x02 
+                length: 0x00 0x15 
+                
+payload        : 0 15 43 43 3A 35 30 3A 45 33 3A 39 42 3A 46 37 3A 38 34 2F 6C 65 64 {CC:50:E3:9B:F7:84/
+                 led}
+
+Mqtt: B0 2 0 2  UnsubAckPacket
+fixed header: 0xB0 0x02
+    control packet type: 0xB0 {unsubscribe acknowledge packet}
+    Remaining length  : 0x02
+veriable header: 0x00 0x02
+                 packet identifier
+Payload : UnsubAckPacket has no payload
+
+Mqtt: C0 0 PingRequestPacket
+fixed header: 0xC0 0x00
+    control packet type: 0xC0 {ping request packet}
+    Remaining length  : 0x00
+veriable header: has no veriable header
+Payload : has no payload
+
+Mqtt: D0 0 PingRespPacket
+fixed header: 0xD0 0x00
+    control packet type: 0xD0 {ping response packet}
+    Remaining length  : 0x00
+veriable header: has no veriable header
+Payload : has no payload
+
+
+Disconnect
+Mqtt: E0 0 sendDisconnect
+fixed header: E0 0x00
+    control packet type: 0xE0 {disconnect packet}
+    Remaining length  : 0x00
+veriable header: has no veriable header
+Payload : has no payload
+
+*/
