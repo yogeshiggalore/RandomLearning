@@ -12,7 +12,7 @@ const char * ssid = "IOTDev";
 const char * password = "IOTDev1234";
 
 String FirmwareVer = {
-  "1.2"
+  "1.3"
 };
 
 #define URL_fw_Version "https://raw.githubusercontent.com/yogeshiggalore/RandomLearning/main/ESP32_OTA_Demo/src/version.txt"
@@ -27,7 +27,7 @@ int FirmwareVersionCheck();
 
 unsigned long previousMillis = 0; // will store last time LED was updated
 unsigned long previousMillis_2 = 0;
-const long interval = 60000;
+const long interval = 10000;
 const long mini_interval = 1000;
 
 void repeatedCall() {
