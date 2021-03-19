@@ -1,0 +1,5 @@
+(sym_lib_table
+  (lib (name TPS)(type Legacy)(uri E:/Kicad/KicadLibrary/TPS73733DCQ/TPS73733DCQ.lib)(options "")(descr ""))
+  (lib (name LowPowerV1-rescue)(type Legacy)(uri ${KIPRJMOD}/LowPowerV1-rescue.lib)(options "")(descr ""))
+  (lib (name ESP8266)(type Legacy)(uri G:/Kicad/KicadLibrary/ESP8266/ESP8266.lib)(options "")(descr ""))
+)

@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1.0">
+	<title>Dashboard</title> 
+	<script src="/jquery.min.js"></script>
+	<script src="/jqueryui.js"></script>
+	<script src="/knockout.js"></script>
+	<script src="/sevenSeg.js"></script>
+	<link rel="stylesheet" href="/style.css">
+	<link rel="stylesheet" href="/prettify.css">
+	<link href="\favicon.ico" rel="shortcut icon" type="images" />
+	<link href="/speedometer.css" rel="stylesheet" type="text/css" />
+	<script src="/speedometer.js"></script>
+	<style type="text/css">
+		.valueBox{
+			height: 30%;
+			width: 100%;
+			margin-top: 3%;
+		}
+		.outset{
+			border-bottom: outset;
+			border-bottom-color: #ddd !important;
+			margin-bottom: 5%;
+			width: 100%;
+		}
+		
+		#firstRow{
+			width: 100%;
+			height: 75%;
+			margin-top: 5%;
+		}
+		#voltageBox{
+			box-shadow:0px 0px 16px rgba(0,0,0,0.28);
+			width: 25%;
+			height: 15%;
+			background-color: rgba(212, 212, 212, 1);
+			margin-right: 80px;
+			float: right;	
+		}
+		#currentBox{
+			box-shadow:0px 0px 16px rgba(0,0,0,0.28);
+			width: 25%;
+			height: 15%;
+			background-color: rgba(212, 212, 212, 1);
+			margin-right: 80px;
+			float: right;	
+		}
+		#powerBox{
+			box-shadow:0px 0px 16px rgba(0,0,0,0.28);
+			width: 25%;
+			height: 15%;
+			background-color: rgba(212, 212, 212, 1);
+			margin-right: 80px;
+			float: right;	
+		}
+		#secondRow{
+			width: 100%;
+			height: 75%;
+			margin-top: 20%;
+		}
+		#unitsBox{
+			box-shadow:0px 0px 16px rgba(0,0,0,0.28);
+			width: 25%;
+			height: 15%;
+			background-color:rgba(212, 212, 212, 1);
+			margin-right: 80px;		
+			float: right;
+		}
+		#frequencyBox{
+			box-shadow:0px 0px 16px rgba(0,0,0,0.28);
+			width: 25%;
+			height: 15%;
+			background-color: rgba(212, 212, 212, 1);
+			margin-right: 80px;
+			float: right;	
+		}
+		#powerfactorBox{
+			box-shadow:0px 0px 16px rgba(0,0,0,0.28);
+			width: 25%;
+			height: 15%;
+			background-color: rgba(212, 212, 212, 1);
+			margin-right: 80px;
+			float: right;	
+		}
+		.imgAlign{
+			vertical-align: middle;
+			margin-left: 5%;
+			
+		}
+		.titleHeading{
+			margin-left: 10%;
+			font-size: 55px;
+			font-weight: bold;
+			color: rgba(51, 135, 204, 1);
+		}
+		.fontSize{
+			font-size: 25px;
+			font-weight: bold;
+			color: rgba(0, 0, 0, 1);
+		}
+		
+		@media only screen and (max-width: 500px){
+			/*For mobile phones:*/
+			#voltageBox,#powerBox,#powerfactorBox,#unitsBox,#currentBox,#frequencyBox{
+				width: 75%;
+			}
+			.imgAlign {
+   				 width: 20%;
+   				 padding: 0;
+ 			}
+  			.titleHeading {
+    			width: 50%;
+    			margin-left: 5%;
+    			 font-size: 20px;
+ 			}
+		}			
+	</style>
+	
+	<body>
+		<div id="main">
+			<div class="outset">
+				<span  class="titleHeading"> Energy Dashboard</span>
+			</div>
+
+			<div id="firstRow">
+				<div id="currentBox">
+					<label class="fontSize"> Current(A): </label>
+					<div  class="exampleContainer valueBox">
+							<div id = "Current"></div>
+					</div>
+				</div>
+				<div id = "voltageBox">
+					<label class="fontSize"> Voltage(V): </label>
+					<div  class="exampleContainer valueBox" >
+						<div id = "Voltage"></div>
+					</div>
+				</div>
+				<div id = "unitsBox">
+					<label class="fontSize"> Units(kWh): </label>
+					<div class="exampleContainer valueBox" >
+							<div id = "Units"></div>
+					</div>
+				</div>	
+			</div>
+					
+
+			<div id="secondRow">
+				<div id="powerfactorBox">
+					<label class="fontSize"> PowerFactor(PF): </label>
+					<div class="exampleContainer valueBox" >
+							<div id = "PowerFactor"></div>
+					</div>
+				</div>
+
+				<div id="frequencyBox">
+					<label class="fontSize"> Ferquency(Hz): </label>
+					<div class="exampleContainer valueBox">
+						<div id = "Frequency"></div>
+					</div>
+				</div>	
+				
+				<div id="powerBox">
+					<label class="fontSize"> Power(kW): </label>
+					<div class=" exampleContainer valueBox">
+						<div id = "Power"></div>
+					</div>
+				</div>	
+			</div>
+		</div>
+		<script>
+			var fUnits;
+			var fVoltage;
+			var fCurrent;
+			var fPower;
+			var fFrequency;
+			var fPowerFactor;
+			var NewData;
+			$("#Units").sevenSeg({ digits: 6});
+				
+			$("#Voltage").sevenSeg({ digits: 6});
+				
+			$("#Current").sevenSeg({ digits: 6});
+				
+			$("#Power").sevenSeg({ digits: 6});
+				
+			$("#Frequency").sevenSeg({ digits: 6});
+				
+			$("#PowerFactor").sevenSeg({ digits: 6 });
+
+			setInterval(function() {
+				GetValues();
+				
+				$("#Units").sevenSeg({  value: fUnits, decimalPlaces: 2 });
+				
+				$("#Voltage").sevenSeg({  value: fVoltage,decimalPlaces: 1 });
+				
+				$("#Current").sevenSeg({  value: fCurrent,decimalPlaces: 3});
+				
+				$("#Power").sevenSeg({  value: fPower,decimalPlaces: 3});
+				
+				$("#Frequency").sevenSeg({  value: fFrequency,decimalPlaces: 1 });
+				
+				$("#PowerFactor").sevenSeg({  value:fPowerFactor,decimalPlaces: 2 });
+			}, 1000);
+
+			var json_data = 0;	
+			function GetValues() {
+				var xhttp = new XMLHttpRequest();
+				xhttp.timeout = 5000;
+				xhttp.open("GET", "/modbusupdate", true);
+				
+				xhttp.onreadystatechange = function() {
+					if (this.readyState == XMLHttpRequest.DONE && this.status == 200) {
+						json_data = JSON.parse(this.responseText);
+						console.log(json_data);
+						fUnits = json_data['Unit'];
+						fVoltage = json_data['Voltage'];
+						fCurrent = json_data['Current'];
+						fPower = json_data['Power'];
+						fFrequency = json_data['Frequency'];
+						fPowerFactor = json_data['Powerfactor'];
+						NewData = json_data['Energyflag'];
+
+						if(NewData == 0){
+							fVoltage = 999999;
+							fCurrent = 999999;
+							fPower = 999999;
+							fFrequency = 999999;
+							fPowerFactor = 999999;
+							fUnits = 999999;
+						}
+						
+						//console.log(myList);
+						//GenerateTable(myList);
+						//document.getElementById("currentwifi").textContent=json_data['Wifi'];
+						//document.getElementById("rssi").textContent=json_data['rssi'];
+					}else{
+						console.log("Data error");
+					}
+				};
+				xhttp.send();
+			}
+
+		</script>
+		
+	</body>
+	</html>
