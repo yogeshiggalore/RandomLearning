@@ -12,7 +12,7 @@ const char * ssid = "IOTDev";
 const char * password = "IOTDev1234";
 
 String FirmwareVer = {
-  "1.4"
+  "1.5"
 };
 
 #define URL_fw_Version "https://raw.githubusercontent.com/yogeshiggalore/RandomLearning/main/ESP32_OTA_Demo/src/version.txt"
