@@ -3,6 +3,10 @@
 #include <HTTPUpdate.h>
 #include <WiFiClientSecure.h>
 #include "cert.h"
+#include <SPI.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_PCD8544.h>
+#include <Wire.h>
 
 const char * ssid = "IOTDev";
 const char * password = "IOTDev1234";
@@ -14,8 +18,8 @@ String FirmwareVer = {
 #define URL_fw_Version "https://raw.githubusercontent.com/yogeshiggalore/RandomLearning/main/ESP32_OTA_Demo/src/version.txt"
 #define URL_fw_Bin     "https://raw.githubusercontent.com/yogeshiggalore/RandomLearning/main/ESP32_OTA_Demo/src/firmware.bin"
 
-//#define URL_fw_Version "http://cade-make.000webhostapp.com/version.txt"
-//#define URL_fw_Bin "http://cade-make.000webhostapp.com/firmware.bin"
+Adafruit_PCD8544 display = Adafruit_PCD8544(18, 23, 4, 15, 2);
+int contrastValue = 60; // Default Contrast Value
 
 void connect_wifi();
 void firmwareUpdate();
@@ -25,6 +29,7 @@ unsigned long previousMillis = 0; // will store last time LED was updated
 unsigned long previousMillis_2 = 0;
 const long interval = 60000;
 const long mini_interval = 1000;
+
 void repeatedCall() {
   static int num=0;
   unsigned long currentMillis = millis();
@@ -82,6 +87,28 @@ void setup() {
   Serial.print("Active firmware version:");
   Serial.println(FirmwareVer);
   pinMode(LED_BUILTIN, OUTPUT);
+   /* Initialize the Display*/
+  display.begin();
+
+  /* Change the contrast using the following API*/
+  display.setContrast(contrastValue);
+
+  /* Clear the buffer */
+  display.clearDisplay();
+  display.display();
+  delay(1000);
+  
+  /* Now let us display some text */
+  display.setTextColor(BLACK);
+  display.setCursor(0,1);
+  display.setTextSize(1);
+  display.println("FW version");
+  display.setTextSize(1);
+  display.setTextColor(BLACK);
+  display.setCursor(22,20);
+  display.println(FirmwareVer);
+  display.display();
+  delay(2000);
   connect_wifi();
 }
 void loop() {
@@ -175,6 +202,9 @@ int FirmwareVersionCheck(void) {
     {
       Serial.println(payload);
       Serial.println("New firmware detected");
+	  display.setCursor(22,32);
+  		display.println("New firmware detected");
+  		display.display();
       return 1;
     }
   } 
