@@ -12,7 +12,7 @@ const char * ssid = "IOTDev";
 const char * password = "IOTDev1234";
 
 String FirmwareVer = {
-  "1.1"
+  "1.2"
 };
 
 #define URL_fw_Version "https://raw.githubusercontent.com/yogeshiggalore/RandomLearning/main/ESP32_OTA_Demo/src/version.txt"
@@ -194,6 +194,7 @@ int FirmwareVersionCheck(void) {
   if (httpCode == HTTP_CODE_OK) // if version received
   {
     payload.trim();
+	Serial.println(payload);
     if (payload.equals(FirmwareVer)) {
       Serial.printf("\nDevice already on latest firmware version:%s\n", FirmwareVer);
       return 0;
