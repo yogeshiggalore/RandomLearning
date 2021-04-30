@@ -24,8 +24,8 @@
 			"path": "DCEnergyMeter"
 		},
 		{
-			"name": "ESP32_OTA_Demo",
-			"path": "ESP32_OTA_Demo"
+			"name": "SmartFMV1",
+			"path": "SmartFM\\SmartFMV1"
 		}
 	]
 }

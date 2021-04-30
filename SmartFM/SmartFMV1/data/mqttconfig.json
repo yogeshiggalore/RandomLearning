@@ -1,0 +1,11 @@
+{
+    "server":"silicosmos.in",
+    "port"  : 1883,
+    "keepalive": 600,
+    "client": "nomqtt",
+    "username":"yogesh",
+    "password": "yogesh",
+    "topicpass": "ro",
+    "qos": 1,
+    "retain":1
+} 

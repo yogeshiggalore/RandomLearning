@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1.0">
+	<title>Dashboard</title> 
+	<script src="jquery.min.js"></script>
+	<script src="jqueryui.js"></script>
+	<script src="knockout.js"></script>
+	<script src="sevenSeg.js"></script>
+	<script src="led.js"></script>
+	<script src="online_offline.js"></script>
+	<link rel="stylesheet" href="online_offline.css">
+	<link rel="stylesheet" href="buttons.css">
+	<link rel="stylesheet" href="eNtroL.css">
+	<!--<link rel="stylesheet" href="ionicons.min.css">-->
+	<link href="https://unpkg.com/ionicons@4.4.4/dist/css/ionicons.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="style.css">
+	<link rel="stylesheet" href="prettify.css">
+	<link href="\favicon.ico" rel="shortcut icon" type="images" />
+	<link href="speedometer.css" rel="stylesheet" type="text/css" />
+	<script src="speedometer.js"></script>
+	<style type="text/css">
+
+		.valueBox{
+			height: 30%;
+			width: 100%;
+			margin-top: 3%;
+			margin-left:0%;
+		}
+		/*.outset{
+			border-bottom: outset;
+			border-bottom-color: #ddd !important;
+			margin-bottom: 5%;
+			width: 100%;
+		}*/
+		
+		#firstRow{
+			width: 100%;
+			height: 75%;
+			margin-top: 5%;
+		}
+		#voltageBox{
+			box-shadow:0px 0px 16px rgba(0,0,0,0.28);
+			width: 25%;
+			height: 15%;
+			background-color: #e6f2f2;
+			margin-right: 80px;
+			float: right;	
+		}
+		#currentBox{
+			box-shadow:0px 0px 16px rgba(0,0,0,0.28);
+			width: 25%;
+			height: 15%;
+			background-color: #e6f2f2;
+			margin-right: 80px;
+			float: right;	
+		}
+		#powerBox{
+			box-shadow:0px 0px 16px rgba(0,0,0,0.28);
+			width: 25%;
+			height: 15%;
+			background-color: #e6f2f2;
+			margin-right: 80px;
+			float: right;	
+		}
+		#secondRow{
+			width: 100%;
+			height: 75%;
+			margin-top: 27%;
+		}
+		#unitsBox{
+			box-shadow:0px 0px 16px rgba(0,0,0,0.28);
+			width: 25%;
+			height: 15%;
+			background-color:#e6f2f2;
+			margin-right: 80px;		
+			float: right;
+		}
+		#frequencyBox{
+			box-shadow:0px 0px 16px rgba(0,0,0,0.28);
+			width: 25%;
+			height: 15%;
+			background-color: #e6f2f2;
+			margin-right: 80px;
+			float: right;	
+		}
+		#powerFactorBox{
+			box-shadow:0px 0px 16px rgba(0,0,0,0.28);
+			width: 25%;
+			height: 15%;
+			background-color: #e6f2f2;
+			margin-right: 80px;
+			float: right;		
+		}
+		
+		.fontSize{
+			font-size: 25px;
+			font-weight: bold;
+			color: rgba(0, 0, 0, 1);
+		}
+        /*.firstrow,.secondrow,.thirdRow{
+        	margin-top: 1%;
+        	margin-left: 5%;
+        }
+        .firstrow label,.secondrow label,.thirdRow label{
+        	margin-left: 1%;
+        	font-size: 25px;
+        	font-weight: bolder;	
+        }
+        #cBox,#pBox,#pfBox{
+        	margin-left: 10%;
+        }        
+		#vBox1{
+        	margin-left: 5%;         	       	
+        }
+        #uBox1{
+        	margin-left: 4%; 
+        }
+        #cBox1{
+        	margin-left: 6%; 
+        }
+        #pBox1{
+        	margin-left: 6%; 
+        }*/
+        .fifthRow{
+        	margin-left: 5%;
+        	width: 600px;
+        	height: 150px;
+        	margin-top: 2%;
+        	border: 2px solid rgba(0, 0, 0, 1);
+        	box-shadow:0px 0px 16px rgba(0,0,0,0);
+        	background-color: white;
+        	float: left;	
+        }
+        .fifthRow label{
+        	margin-left: 35%;
+        	font-weight: bolder;
+        	font-size: 20px;
+        } 
+
+		.led-box {
+			margin-left: 5%;
+		    width: 50px;
+		   	float: left;
+		   	margin-top: 2%;
+		}
+		.led-box p {
+		  	font-size: 15px;
+		  	text-align: center;
+		  	margin: 1em;
+		  	font-weight: bolder;
+		}
+		.led-yellow {
+		  	margin: 0 auto;
+		  	width: 24px;
+		  	height: 24px;
+		 	background-color: #0000;
+		  	border-radius: 50%;
+		  	box-shadow: rgba(0, 0, 0, 0.2) 0 -1px 7px 1px, inset #000 0 -1px 9px, #000 0 2px 12px;
+		  	
+		}
+		
+		.led-green {
+		  	margin: 0 auto;
+		  	width: 24px;
+		  	height: 24px;
+		  	background-color: #0000;
+		  	border-radius: 50%;
+		  	box-shadow: rgba(0, 0, 0, 0.2) 0 -1px 7px 1px, inset #000 0 -1px 9px, #000 0 2px 12px;
+			
+		}
+
+		*{
+		  	box-sizing:border-box;
+		  	/*border:1px solid yellow;*/
+		  	user-select: none;
+		}
+		.signal{
+		  	width:50px;
+			height:50px;		  
+		  	margin-left: 50%;
+			margin-top: 0%;
+			position:relative;
+			overflow:hidden;
+		  /*transform-origin:50% 50%;
+		   //margin-top:50px;		   
+		  margin-bottom:100px;
+		   //background-color:green;*/
+		  	transform:rotate(45deg) scale(2);		  
+		}
+		.curveOne{
+			border-radius:50%;
+		  	border:5px solid #fff;
+		  	position:absolute;
+		  	width:200%;
+		  	height:200%;
+		  	/*background-color: #00b3b3;*/
+		}
+		.curveTwo{
+		  	border-radius:50%;
+		  	border:5px solid #fff;
+		  	position:absolute;
+		  	right:0%;
+		  	bottom:0;
+		  	transform:translate(50%,50%);
+		  	width:150%;
+		  	height:150%;
+		}
+		.curveThree{
+		  	border-radius:50%;
+		  	border:5px solid #fff;
+		  	position:absolute;
+		  	right:0%;
+		  	width:100%;
+		  	transform:translate(50%,50%);
+		  	height:100%;
+		}
+		.curveFour{
+		  	border-radius:50%;
+		  	border:5px solid #fff;
+		  	position:absolute;
+		  	bottom:0;
+		  	/*background-color:#fff;*/
+		  	height:50%;
+		  	right:0%;
+		  	width:50%;
+		  	transform:translate(50%,50%);		  
+		}
+		
+		.switch input {
+			ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+			filter: alpha(opacity=0);
+			-moz-opacity: 0;
+			opacity: 0;
+			z-index: 100;
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			cursor: pointer;
+		}
+		.switch {
+		  	width: 150px;
+		  	height: 40px;
+		  	position: relative;
+		  	margin-top: 10%;  
+		}
+		.switch label {
+		  	display: block;
+		  	width: 80%;
+		  	height: 100%;
+		  	position: relative;
+		  	background: #1F2736; /*#121823*/
+		  	background: linear-gradient(#121823, #161d2b);
+		  	border-radius: 30px 30px 30px 30px;
+		  	box-shadow: inset 0 3px 8px 1px rgba(0,0,0,0.5),  inset 0 1px 0 rgba(0,0,0,0.5),  0 1px 0 rgba(255,255,255,0.2);
+		  	-webkit-transition: all .5s ease;
+		  	transition: all .5s ease;
+		}
+		.switch input ~ label i {
+		  	display: block;
+		  	height: 41px;
+		  	width: 41px;
+		  	position: absolute;
+		  	left: 2px;
+		  	top: 2px;
+		  	z-index: 2;
+		  	border-radius: inherit;
+		  background: #283446; /* Fallback */
+		  background: linear-gradient(#36455b, #283446);
+		  box-shadow: inset 0 1px 0 rgba(255,255,255,0.2),  0 0 8px rgba(0,0,0,0.3),  0 12px 12px rgba(0,0,0,0.4);
+		  -webkit-transition: all .5s ease;
+		  transition: all .5s ease;
+		}
+
+		.switch label + span {
+		  content: "";
+		  display: inline-block;
+		  position: absolute;
+		  right: 0px;
+		  top: 10px;
+		  width: 22px;
+		  height: 22px;
+		  border-radius: 10px;
+		  background: black;
+		  background: gradient-gradient(#36455b, #283446);
+		  
+		  box-shadow: inset 0 1px 0 rgba(0,0,0,0.2),  0 1px 0 rgba(255,255,255,0.1),  0 0 10px rgba(185,231,253,0),  inset 0 0 8px rgba(0,0,0,0.9),  inset 0 -2px 5px rgba(0,0,0,0.3),  inset 0 -5px 5px rgba(0,0,0,0.5);
+		  -webkit-transition: all .5s ease;
+		  transition: all .5s ease;
+		  z-index: 2;
+		}
+
+		/* Toggle */
+
+		.switch input:checked ~ label + span {
+		  content: "";
+		  display: inline-block;
+		  position: absolute;
+		  margin-left: 0%;
+		  width: 22px;
+		  height: 22px;
+		  border-radius: 10px;
+		  -webkit-transition: all .5s ease;
+		  transition: all .5s ease;
+		  z-index: 2;
+		  background: #00e600;
+		  /*background: gradient-gradient(#ffffff, #77a1b9);
+		 
+		  box-shadow: inset 0 1px 0 rgba(0,0,0,0.1),  0 1px 0 rgba(255,255,255,0.1),  0 0 10px rgba(100,231,253,1),  inset 0 0 8px rgba( 61,157,247,0.8),  inset 0 -2px 5px rgba(185,231,253,0.3),  inset 0 -3px 8px rgba(185,231,253,0.5); */
+		}
+
+		.switch input:checked ~ label i {
+		  left: auto;
+		  left: 63%;
+		  box-shadow: inset 0 1px 0 rgba(255,255,255,0.2),  0 0 8px rgba(0,0,0,0.3),  0 8px 8px rgba(0,0,0,0.3),  inset -1px 0 1px #b9f3fe;
+		  -webkit-transition: all .5s ease;
+		  transition: all .5s ease;
+		}
+ #relayBox{
+         	margin-left: 6%;
+        	width: 180px;
+        	height: 110px;
+        	margin-top: 2%;
+        	/*border: 2px solid rgba(0, 0, 0, 1);
+        	box-shadow:0px 0px 16px rgba(0,0,0,0);
+        	/*background-color: #c8c8e9;*/
+        	float: left;
+        	
+        }
+        #relayBox label{
+         	font-size: 20px;
+        	font-weight: bolder;
+         	margin-left: 2%;
+        }
+
+        
+         #wifiBox{
+        	margin-left: 5%;
+        	width: 250px;
+        	height: 150px;
+        	margin-top: 1%;
+        	/*border: 2px solid rgba(0, 0, 0, 1);
+        	box-shadow:0px 0px 16px rgba(0,0,0,0);
+        	background-color: #66c5dd;*/
+        	float: left;
+        }
+       
+       
+
+	#mqttBox, #alexaBox{
+            margin-left: 6%;
+            width: 150px;
+            
+            margin-top: 2%;
+           /* border: 2px solid rgba(0, 0, 0, 1);
+            box-shadow:0px 0px 16px rgba(0,0,0,0);
+            /*background-color: #c8c8e9;*/
+            float: left;
+        }
+       #mqttBox label, #alexaBox label{
+            font-size: 20px;
+            font-weight: bolder;
+            margin-left: 0%;
+        }	
+
+
+		*{
+    padding: 0;
+    margin: 0;
+    font-family: 'Quicksand';
+}
+.mqttContainer{
+    margin: auto;
+}
+.mqttstatus{
+    text-align: center;
+    //margin: 180px auto 0;
+	color: #FF0000;
+	
+}
+.mqtticon{
+    font-size: 70px;
+}
+
+.alexaContainer{
+    margin: auto;
+}
+.alexastatus{
+    text-align: center;
+    //margin: 180px auto 0;
+    color: #FF0000;
+}
+.alexaicon{
+    font-size: 70px;
+}
+
+
+@media only screen and (max-width: 800px){
+        .imgAlign {
+            width: 15%;
+            height: 10%;
+            padding: 0;
+        }
+        .header{
+            margin-bottom: 3%;
+        }
+        .titleHeading {
+            width: 15%;
+            margin-left: 5%;
+            font-size: 15px;
+        }
+        #timeBox{
+            width: 110px;
+            margin-top: 5%;         
+            font-size: 1px;
+        }
+        #clock {        
+          color: #5400FF;
+          font-size: 10px;
+          text-align: center; 
+        }
+        .led-box {
+			margin-left: 8%;
+		    width: 5px;
+		   float: left;
+		   margin-top: 2%;
+		}
+		.led-box p {
+		  font-size: 8px;
+		  text-align: center;
+		  margin: 1em;
+		  font-weight: bolder;
+		}
+		#relayBox{
+			width: 110px;
+			float: left;
+			height: 80px;
+			margin-left: 15%;
+		}
+		.switch {
+		  width: 100px;
+		  height: 30px;
+		  position: relative;
+		  margin-top: 10%;
+		  
+		}
+		.switch label + span {
+			width: 15px;
+			height: 15px;
+		}
+		.switch input ~ label i {
+		  display: block;
+		  height: 31px;
+		  width: 31px;
+		  position: absolute;
+		  left: 2px;
+		  top:1px;
+		}
+				.switch input:checked ~ label + span {
+		  content: "";
+		  display: inline-block;
+		  position: absolute;
+		  margin-left: 0%;
+		  width: 15px;
+		  height: 15px;
+		}
+		#wifiBox{
+        	margin-right: 0%;
+        	width: 100px;
+        	height: 90px;
+        	margin-left: 35%;
+        	margin-top: 2%;
+        	/*border: 2px solid rgba(0, 0, 0, 1);
+        	box-shadow:0px 0px 16px rgba(0,0,0,0);
+        	background-color: #66c5dd;*/
+        	float: left;
+        }
+       .signal{
+		  width:32px;
+		  height:32px;	
+		}
+
+	#mqttBox, #alexaBox{
+            margin-left: 6%;
+            width: 100px;
+            height: 80px;
+            margin-top: 2%;
+           /* border: 2px solid rgba(0, 0, 0, 1);
+            box-shadow:0px 0px 16px rgba(0,0,0,0);
+            /*background-color: #c8c8e9;*/
+            float: left;
+           }
+           .mqtticon{
+           	margin-top: 0%;
+    font-size: 40px;
+}
+.mqttContainer{
+    margin-top: 0%
+}
+
+.alexaicon{
+		margin-top: 0%;
+    font-size: 40px;
+}
+      #relayBox label,#mqttBox label, #alexaBox label{
+           font-size: 15px;
+             }
+             #voltageBox,#powerBox,#powerFactorBox,#unitsBox,#currentBox,#frequencyBox{
+				width: 75%;
+			}
+        #firstRow label,#secondRow label{
+        	font-size: 20px;
+        }
+        #voltageBox,#currentBox,#unitsBox,#powerBox,#powerFactorBox,#frequencyBox{
+        	width: 55%;
+        	margin-right: 40%;
+        	margin-top: 2%;
+        }
+        
+        
+        .valueBox{
+        	height: 25%;
+        }
+        .fifthRow{
+        	margin-left: 2%;
+        	width: 300px;
+        	height: 150px;
+        	margin-bottom: 5%;
+        	border: 2px solid rgba(0, 0, 0, 1);
+        	box-shadow:0px 0px 16px rgba(0,0,0,0);
+        	background-color: white;
+        	float: left;
+        }
+        .fifthRow label{
+        	margin-left: 30%;
+        	font-weight: bolder;
+        	font-size: 15px;
+        } 
+
+    }
+	
+  </style>
+	<body >
+		<div class="main">
+			<div class="header">
+				<img class="imgAlign" src="entrollogo.jpg" alt="eNtrol logo">
+				<span  class="titleHeading"> eNtroL Dashboard </span>
+				<!--<img class="imgAlign" id="wifiLogo" src="wifilogo.jpg" alt="wi-fi logo">-->
+				<div id="timeBox">
+					<span id="clock"></span>
+				</div>	
+			</div>
+
+			<div class="fourthRow">
+				<div class="led-box">
+	    			<div class="led-green"></div>
+	    				<p>RX</p>
+	    			</div>
+	    		<div class="led-box">
+		    		<div class="led-yellow"></div>
+		    			<p>TX</p>
+	    			</div>
+				</div>
+
+				<div id="relayBox">
+					<label id = "relaystate">Relay Off</label>
+					<div class="switch">
+					  <input type="checkbox" name="toggle" onclick="relay_change(this)" id="relaycheckbox">
+					  <label for="toggle"><i></i></label>
+					  <span></span>
+					</div>
+				</div>
+				
+				<div id="mqttBox">
+					<label>MQTT</label>
+						<div class="mqttContainer">
+        				<div class="mqttstatus" id="onUpdate">
+            				<i class="mqtticon ion-md-power" id="ion-icon"></i>
+							<!--<h1 class="text">You're online</h1>-->
+        				</div>
+    				</div>
+				</div>
+
+				<div id="alexaBox">
+					<label>Alexa</label>
+					<div class="alexaContainer">
+        				<div class="alexastatus" id="onUpdate">
+            				<i class="alexaicon ion-md-power" id="ion-icon"></i>
+							<!--<h1 class="text">You're offline</h1>-->
+        				</div>
+    				</div>
+				</div>
+			</div>
+				<div id="wifiBox">
+						<div class="container">
+							<div class="signal">
+							  <div class="curveOne" ></div>
+							  <div class="curveTwo med"></div>
+							  <div class="curveThree med"></div>
+							  <div class="curveFour"></div>
+					 		</div><br><br><br>
+  							<div class="box">
+  							<!--	//<span>signal strength<br></span>-->
+							</div>
+
+						</div>
+			</div>	
+			<button onclick="window.location.href = '/wificonfig.html';" class="button">WIFI</button>
+			<button onclick="window.location.href = '/mqttconfig.html';" class="button">MQTT</button>
+			<button onclick="window.location.href = '/alexaconfig.html';" class="button">ALEXA</button>
+			<button onclick="window.location.href = '/tsconfig.html';" class="button">Thingspeak</button>
+			<button id="Reset_button" class="button">RESET</button>
+			<div id="firstRow">
+				<div id="currentBox">
+					<label class="fontSize"> Current(A): </label>
+					<div  class="exampleContainer valueBox">
+						<div id = "Current"></div>
+					</div>
+				</div>
+				<div id = "voltageBox">
+					<label class="fontSize"> Voltage(V): </label>
+					<div  class="exampleContainer valueBox" >
+						<div id = "Voltage"></div>
+					</div>
+				</div>
+				<div id = "unitsBox">
+					<label class="fontSize"> Units(kWh): </label>
+					<div class="exampleContainer valueBox" >
+						<div id = "Units"></div>
+					</div>
+				</div>	
+			</div>
+					
+
+			<div id="secondRow">
+				<div id="powerFactorBox">
+					<label class="fontSize"> PowerFactor(PF): </label>
+					<div class="exampleContainer valueBox">
+						<div id = "PowerFactor"></div>
+					</div>
+				</div>
+
+				<div id="frequencyBox">
+					<label class="fontSize"> Frequency(Hz): </label>
+					<div class="exampleContainer valueBox">
+						<div id = "Frequency"></div>
+					</div>
+				</div>	
+				
+				<div id="powerBox">
+					<label class="fontSize"> Power(kW): </label>
+					<div class=" exampleContainer valueBox">
+						<div id = "Power"></div>
+					</div>
+				</div>	
+			</div>
+		
+		</div>
+		<script>
+			function currentTime() {
+			  var date = new Date(); /* creating object of Date class */
+			  var dayName = getDayName(date.getDay());
+			  var monthName = getMonthName(date.getMonth());
+			  var hour = date.getHours();
+			  var min = date.getMinutes();
+			  var sec = date.getSeconds();
+			  var midday = "AM";
+			  midday = (hour >= 12) ? "PM" : "AM"; /* assigning AM/PM */
+			  hour = (hour == 0) ? 12 : ((hour > 12) ? (hour - 12): hour); /* assigning hour in 12-hour format */
+			  hour = updateTime(hour);
+			  min = updateTime(min);
+			  sec = updateTime(sec);
+			  var x =dayName + "," +  date.getDate() + " " + monthName + " "  + date.getFullYear(); 
+			  document.getElementById("clock").innerText = x  + '\n'+ hour + " : " + min + " : " + sec + " " + midday; /* adding time to the div */
+			    var t = setTimeout(currentTime, 1000); /* setting timer */
+			}
+
+			function updateTime(k) { /* appending 0 before time elements if less than 10 */
+			  if (k < 10) {
+			    return "0" + k;
+			  }
+			  else {
+			    return k;
+			  }
+			}
+
+			currentTime();
+
+			function getDayName(day) {
+		    	var ar1 = new Array("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat");
+		   		return ar1[day];
+			}
+
+			function getMonthName(month) {
+		    	var ar = new Array("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December");
+		    	return ar[month];
+			
+			}
+
+		
+$(document).ready(function(){
+	$(".signal div").css("opacity","0.05");
+});
+			$('#Reset_button').click(function(e){
+				e.preventDefault();
+				if (confirm('Are you sure you reset hardware?')) {
+					sDataString = '/reset?value=';
+					sOutString = sDataString.concat('1');
+					$.get(sOutString, function(data){
+					alert(data);
+					location.reload();
+					});
+				}
+			});
+
+	function relay_change(checkbox){
+    	//If it is checked.
+    	if(checkbox.checked){
+			$.get('/relayupdate?state=1', function(data){
+				console.log(data);
+				document.getElementById("relaystate").innerHTML = data;
+				alert(data);
+			});
+    	}
+    	//If it has been unchecked.
+    	else{
+			$.get('/relayupdate?state=0', function(data){
+				console.log(data);
+				document.getElementById("relaystate").innerHTML = data;
+				alert(data);
+			});
+    	}
+	}	
+			
+
+			setInterval(function() {
+				GetValues();
+				
+				$("#unitsBox").sevenSeg({ digits: 5, value: 0, colorBackground:'black',  colorOn: 'Red', colorOff: '#320000'});
+				$("#voltageBox").sevenSeg({ digits: 5, value: 0, colorBackground:'black',  colorOn: 'Red', colorOff: '#320000' });
+				$("#currentBox").sevenSeg({ digits: 5, value: 0, colorBackground:'black',  colorOn: 'Red', colorOff: '#320000'});
+        		$("#powerBox").sevenSeg({ digits: 5, value: 0, colorBackground:'black',  colorOn: 'Red', colorOff: '#320000' });
+				$("#frequencyBox").sevenSeg({ digits: 5, value:0 , colorBackground:'black',  colorOn: 'Red', colorOff: '#320000'});
+				$("#powerFactorBox").sevenSeg({ digits: 5, value: 0, colorBackground:'black',  colorOn: 'Red', colorOff: '#320000' });
+
+
+				$("#unitsBox").sevenSeg({ digits: 5, value: fUnits, colorBackground:'black',  colorOn: 'Red', colorOff: '#320000'});
+				$("#voltageBox").sevenSeg({ digits: 5, value: fVoltage, colorBackground:'black',  colorOn: 'Red', colorOff: '#320000' });
+				$("#currentBox").sevenSeg({ digits: 5, value: fCurrent, colorBackground:'black',  colorOn: 'Red', colorOff: '#320000'});
+        		$("#powerBox").sevenSeg({ digits: 5, value: fPower, colorBackground:'black',  colorOn: 'Red', colorOff: '#320000' });
+				$("#frequencyBox").sevenSeg({ digits: 5, value:fFrequency , colorBackground:'black',  colorOn: 'Red', colorOff: '#320000'});
+				$("#powerFactorBox").sevenSeg({ digits: 5, value: fPowerFactor, colorBackground:'black',  colorOn: 'Red', colorOff: '#320000' });
+				
+			}, 5000);
+
+			var json_data = 0;
+			var tableentry = new Array();
+			var fUnits;
+			var fVoltage;
+			var fCurrent;
+			var fPower;
+			var fFrequency;
+			var fPowerFactor;
+			var NewData;
+
+			function GetValues() {
+				var xhttp = new XMLHttpRequest();
+				xhttp.onreadystatechange = function() {
+					if (this.readyState == 4 && this.status == 200) {
+						json_data = JSON.parse(this.responseText);
+						tableentry.push(["Name", "Value"]);
+						var myList = [];
+						for(var i in json_data){
+							myList.push([i, json_data [i]]);
+						}
+						console.log(json_data);
+						$(".signal div").css("opacity","1");
+      					$(".signal div").show();
+						if(json_data["rssi"] > 75){
+							$(".curveOne .med").show();
+            				$(".curveOne").css("background" , "#00e600");
+            				$(".curveFour").css("background" , "#00e600");
+            				$(".med").css("background" , "#00e600");	
+						}else if (json_data["rssi"] > 50) {
+							$(".curveOne").hide();
+            				$(".curveFour").show();
+         					$(".curveFour ").css("background","#ffcc00");
+         					$(".med").css("background" , "#ffcc00");
+						} else if(json_data["rssi"] > 25){
+							$(".med").hide();
+            				$(".curveOne").hide();
+            				$(".curveFour").show();
+           					$(".curveFour ").css("background","#e60000");
+						}else {
+							$(".signal div").css("opacity","0.05");
+						}
+						
+						if(json_data["ledy"]){
+							var elements = document.getElementsByClassName('led-yellow');
+							elements[0].style.backgroundColor = "yellow";
+						}else{
+							var elements = document.getElementsByClassName('led-yellow');
+							elements[0].style.backgroundColor = "black";
+						}
+
+						if(json_data["ledg"]){
+							var elements = document.getElementsByClassName('led-green');
+							elements[0].style.backgroundColor = "green";
+						}else{
+							var elements = document.getElementsByClassName('led-green');
+							elements[0].style.backgroundColor = "black";
+						}
+
+						if(json_data["alexaS"]){
+							var elements = document.getElementsByClassName('alexastatus');
+							elements[0].style.color = "green";
+						}else{
+							var elements = document.getElementsByClassName('alexastatus');
+							elements[0].style.color = "red";
+						}
+
+						if(json_data["mqttS"]){
+							var elements = document.getElementsByClassName('mqttstatus');
+							elements[0].style.color = "green";
+						}else{
+							var elements = document.getElementsByClassName('mqttstatus');
+							elements[0].style.color = "red";
+						}
+
+						if(json_data["relayS"] == "Relay On"){
+							document.getElementById("relaycheckbox").checked = true;
+						}else{
+							document.getElementById("relaycheckbox").checked = false;
+						}
+
+						document.getElementById("relaystate").innerHTML = json_data["relayS"];
+						
+						fUnits = json_data['Unit'];
+						fVoltage = json_data['Voltage'];
+						fCurrent = json_data['Current'];
+						fPower = json_data['Power'];
+						fFrequency = json_data['Frequency'];
+						fPowerFactor = json_data['Powerfactor'];
+						NewData = json_data['Energyflag'];
+
+						if(NewData == 0){
+							fVoltage = 0;
+							fCurrent = 0;
+							fPower = 0;
+							fFrequency = 0;
+							fPowerFactor = 0;
+							fUnits = 0;
+						}
+
+						//console.log(myList);
+						//GenerateTable(myList);
+						//document.getElementById("currentwifi").textContent=json_data['Wifi'];
+						//document.getElementById("rssi").textContent=json_data['rssi'];
+					}
+				};
+				xhttp.open("GET", "/entrolupdate", false);
+				xhttp.send();
+			}
+			
+		</script>
+		
+	</body>
+	</html>
